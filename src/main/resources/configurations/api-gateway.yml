@@ -1,0 +1,41 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: auth
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/v1/auth/**
+        - id: clients
+          uri: lb://client-service
+          predicates:
+            - Path=/api/v1/clients/**, /api/v1/goals/**, /api/v1/measurements/**
+        - id: plans
+          uri: lb://plans-service
+          predicates:
+            - Path=/api/v1/plans/**
+        - id: class
+          uri: lb://class-service
+          predicates:
+            - Path=/api/v1/classes/**
+        - id: admin
+          uri: lb://admin-service
+          predicates:
+            - Path=/api/v1/admins/**, /api/v1/companies/**
+        - id: trainer
+          uri: lb://trainer-service
+          predicates:
+            - Path=/api/v1/trainers/**
+eureka:
+  client:
+    register-with-eureka: false
